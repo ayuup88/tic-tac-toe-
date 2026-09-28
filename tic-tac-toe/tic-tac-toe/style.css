@@ -1,0 +1,389 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  /* Linear gradient background */
+  background: linear-gradient(
+    135deg,
+    #667eea 0%,
+    #764ba2 50%,
+    #f093fb 100%
+  );
+}
+
+
+/* =========================
+   GAME SCREEN
+========================= */
+
+.game-container {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 30px 20px;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  border-radius: 24px;
+
+  text-align: center;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+h1 {
+  font-size: 2.3rem;
+  color: #222;
+
+  margin-bottom: 10px;
+}
+
+#status {
+  font-size: 1.1rem;
+  font-weight: bold;
+
+  color: #666;
+
+  margin-bottom: 22px;
+}
+
+
+/* =========================
+   BOARD
+========================= */
+
+.board {
+  width: min(90vw, 360px);
+
+  aspect-ratio: 1 / 1;
+
+  margin: 0 auto 25px;
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+}
+
+.cell {
+  border: none;
+
+  border-radius: 14px;
+
+  background: #f1f3f8;
+
+  font-size: clamp(2.5rem, 15vw, 5rem);
+
+  font-weight: bold;
+
+  color: #667eea;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell:hover {
+  background: #e3e6f0;
+
+  transform: scale(1.03);
+}
+
+.cell:active {
+  transform: scale(0.95);
+}
+
+
+/* X color */
+
+.cell.x {
+  color: #667eea;
+}
+
+
+/* O color */
+
+.cell.o {
+  color: #e05a5a;
+}
+
+
+/* Winning cells */
+
+.cell.winner {
+  background: #b8f5c5;
+
+  color: #16852d;
+
+  animation: winnerAnimation 0.5s ease;
+}
+
+@keyframes winnerAnimation {
+
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.restart-btn,
+.new-game-btn {
+
+  border: none;
+
+  padding: 13px 28px;
+
+  border-radius: 12px;
+
+  color: white;
+
+  font-size: 1rem;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.restart-btn {
+  background: #667eea;
+}
+
+.restart-btn:hover {
+  background: #5568d8;
+}
+
+.restart-btn:active,
+.new-game-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* =========================
+   RESULT SCREEN
+========================= */
+
+.result-screen {
+
+  display: none;
+
+  width: 100%;
+  max-width: 420px;
+
+  text-align: center;
+}
+
+
+/* Result card */
+
+.result-card {
+
+  background: rgba(255, 255, 255, 0.97);
+
+  padding: 45px 25px;
+
+  border-radius: 25px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.3);
+
+  animation: resultAppear 0.5s ease;
+}
+
+
+@keyframes resultAppear {
+
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+}
+
+
+/* Result icon */
+
+.result-icon {
+
+  font-size: 4.5rem;
+
+  margin-bottom: 15px;
+
+  animation: iconBounce 0.8s ease;
+}
+
+
+@keyframes iconBounce {
+
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+
+/* Result title */
+
+#resultTitle {
+
+  font-size: 2rem;
+
+  color: #222;
+
+  margin-bottom: 10px;
+}
+
+
+/* Result message */
+
+#resultMessage {
+
+  color: #666;
+
+  font-size: 1.1rem;
+
+  margin-bottom: 25px;
+}
+
+
+/* New Game button */
+
+.new-game-btn {
+
+  background: linear-gradient(
+    135deg,
+    #667eea,
+    #764ba2
+  );
+
+  min-width: 150px;
+}
+
+.new-game-btn:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+  body {
+    padding: 12px;
+  }
+
+  .game-container {
+    padding: 25px 15px;
+
+    border-radius: 20px;
+  }
+
+  h1 {
+    font-size: 1.9rem;
+  }
+
+  #status {
+    font-size: 1rem;
+  }
+
+  .board {
+    gap: 6px;
+  }
+
+  .cell {
+    border-radius: 10px;
+  }
+
+  .result-card {
+    padding: 40px 20px;
+  }
+
+  .result-icon {
+    font-size: 4rem;
+  }
+
+  #resultTitle {
+    font-size: 1.7rem;
+  }
+}
+
+
+/* =========================
+   SMALL PHONES
+========================= */
+
+@media (max-width: 320px) {
+
+  .game-container {
+    padding: 20px 10px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .board {
+    gap: 4px;
+  }
+
+  .cell {
+    border-radius: 8px;
+  }
+
+}
