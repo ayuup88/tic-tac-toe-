@@ -319,7 +319,14 @@ select {
 
 
 <script>
+const clickSound = new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3");
+const winSound = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+const drawSound = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3");
 
+function playSound(sound) {
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+}
 let board = [];
 let size = 3;
 let currentPlayer = "X";
@@ -419,7 +426,11 @@ function createBoard() {
 // MAKE MOVE
 
 function makeMove(index) {
+playSound(clickSound);
+    board[index] = currentPlayer;
+playSound(clickSound);
 
+renderBoard();
     if (gameOver) return;
 
     if (board[index] !== "") return;
@@ -578,9 +589,17 @@ function getWinningLines() {
 // FINISH GAME
 
 function finishGame(result) {
+if (result.winner === "draw") {
 
+    playSound(drawSound);
+
+    scores.draw++;
     gameOver = true;
+} else {
 
+    playSound(winSound);
+
+    scores[result.winner]++;
     if (result.winner === "draw") {
 
         scores.draw++;
