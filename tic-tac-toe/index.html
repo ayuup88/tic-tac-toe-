@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(135deg, #111827, #1e3a8a);
+  background: linear-gradient(135deg, #111827, #1d4ed8);
   color: white;
   display: flex;
   justify-content: center;
@@ -29,21 +30,25 @@ body {
   text-align: center;
 }
 
+.screen {
+  background: rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
 h1 {
-  font-size: 42px;
+  font-size: 45px;
   margin-bottom: 10px;
 }
 
-.subtitle {
-  color: #cbd5e1;
-  margin-bottom: 25px;
+h2 {
+  margin-bottom: 20px;
 }
 
-.menu, .game {
-  background: rgba(255,255,255,0.1);
-  padding: 25px;
-  border-radius: 25px;
-  backdrop-filter: blur(10px);
+.subtitle {
+  color: #dbeafe;
+  margin-bottom: 25px;
 }
 
 button {
@@ -57,15 +62,23 @@ button {
   cursor: pointer;
   background: white;
   color: #111827;
-  transition: 0.2s;
 }
 
 button:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 button:active {
   transform: scale(0.98);
+}
+
+.back {
+  background: #374151;
+  color: white;
+}
+
+.hidden {
+  display: none !important;
 }
 
 #board {
@@ -81,8 +94,8 @@ button:active {
   color: #111827;
   border-radius: 15px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   font-size: 55px;
   font-weight: bold;
   cursor: pointer;
@@ -94,18 +107,13 @@ button:active {
 
 .info {
   font-size: 20px;
-  margin: 10px 0;
+  margin: 10px;
 }
 
 .score {
   display: flex;
   justify-content: space-around;
   margin: 15px 0;
-  font-size: 18px;
-}
-
-.hidden {
-  display: none;
 }
 
 #message {
@@ -115,14 +123,9 @@ button:active {
   margin: 10px;
 }
 
-.back {
-  background: #374151;
-  color: white;
-}
-
 @media (max-width: 500px) {
   h1 {
-    font-size: 34px;
+    font-size: 35px;
   }
 
   .cell {
@@ -136,13 +139,32 @@ button:active {
 
 <div class="container">
 
-  <h1>🎮 Tic-Tac-Toe</h1>
-  <p class="subtitle">Choose your game</p>
+  <!-- WELCOME SCREEN -->
+  <div id="welcomeScreen" class="screen">
 
-  <!-- MENU -->
-  <div id="menu" class="menu">
+    <h1>🎮 Tic-Tac-Toe</h1>
 
-    <button onclick="startGame('pvp')">
+    <p class="subtitle">
+      Welcome to the ultimate Tic-Tac-Toe game
+    </p>
+
+    <button onclick="enterGame()">
+      ENTER
+    </button>
+
+  </div>
+
+
+  <!-- MAIN MENU -->
+  <div id="menuScreen" class="screen hidden">
+
+    <h1>🎮 Tic-Tac-Toe</h1>
+
+    <p class="subtitle">
+      Choose your game
+    </p>
+
+    <button onclick="startPVP()">
       👥 1 VS 1
     </button>
 
@@ -152,34 +174,38 @@ button:active {
 
   </div>
 
-  <!-- DIFFICULTY -->
-  <div id="difficulty" class="menu hidden">
+
+  <!-- DIFFICULTY SCREEN -->
+  <div id="difficultyScreen" class="screen hidden">
 
     <h2>Choose Difficulty</h2>
 
-    <button onclick="startGame('easy')">
+    <button onclick="startAI('easy')">
       🟢 EASY
     </button>
 
-    <button onclick="startGame('medium')">
+    <button onclick="startAI('medium')">
       🟡 MEDIUM
     </button>
 
-    <button onclick="startGame('hard')">
+    <button onclick="startAI('hard')">
       🔴 HARD
     </button>
 
-    <button class="back" onclick="backToMenu()">
+    <button class="back" onclick="showMenu()">
       ← BACK
     </button>
 
   </div>
 
-  <!-- GAME -->
-  <div id="game" class="game hidden">
 
-    <div class="info" id="turn">
-      Your turn: X
+  <!-- GAME SCREEN -->
+  <div id="gameScreen" class="screen hidden">
+
+    <h2>Tic-Tac-Toe</h2>
+
+    <div class="info" id="turnText">
+      Turn: X
     </div>
 
     <div class="score">
@@ -192,22 +218,24 @@ button:active {
     <div id="message"></div>
 
     <button onclick="newRound()">
-      🔄 New Round
+      🔄 NEW ROUND
     </button>
 
-    <button class="back" onclick="backToMenu()">
-      🏠 Main Menu
+    <button class="back" onclick="showMenu()">
+      🏠 MAIN MENU
     </button>
 
   </div>
 
 </div>
 
+
 <script>
 
 let board = [];
 let currentPlayer = "X";
 let gameMode = "pvp";
+let difficulty = "easy";
 let gameOver = false;
 
 let xScore = 0;
@@ -224,77 +252,147 @@ const winningLines = [
   [2,4,6]
 ];
 
-function showDifficulty() {
-  document.getElementById("menu").classList.add("hidden");
-  document.getElementById("difficulty").classList.remove("hidden");
+
+// ENTER BUTTON
+function enterGame() {
+
+  document.getElementById("welcomeScreen")
+    .classList.add("hidden");
+
+  document.getElementById("menuScreen")
+    .classList.remove("hidden");
+
 }
 
-function backToMenu() {
-  document.getElementById("menu").classList.remove("hidden");
-  document.getElementById("difficulty").classList.add("hidden");
-  document.getElementById("game").classList.add("hidden");
 
-  gameOver = true;
-}
+// 1 VS 1
+function startPVP() {
 
-function startGame(mode) {
-
-  gameMode = mode;
-
-  document.getElementById("menu").classList.add("hidden");
-  document.getElementById("difficulty").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
+  gameMode = "pvp";
 
   xScore = 0;
   oScore = 0;
 
   updateScore();
 
+  document.getElementById("menuScreen")
+    .classList.add("hidden");
+
+  document.getElementById("gameScreen")
+    .classList.remove("hidden");
+
   newRound();
 }
 
+
+// SHOW AI DIFFICULTY
+function showDifficulty() {
+
+  document.getElementById("menuScreen")
+    .classList.add("hidden");
+
+  document.getElementById("difficultyScreen")
+    .classList.remove("hidden");
+
+}
+
+
+// START AI
+function startAI(level) {
+
+  gameMode = "ai";
+  difficulty = level;
+
+  xScore = 0;
+  oScore = 0;
+
+  updateScore();
+
+  document.getElementById("difficultyScreen")
+    .classList.add("hidden");
+
+  document.getElementById("gameScreen")
+    .classList.remove("hidden");
+
+  newRound();
+
+}
+
+
+// BACK TO MENU
+function showMenu() {
+
+  gameOver = true;
+
+  document.getElementById("welcomeScreen")
+    .classList.add("hidden");
+
+  document.getElementById("difficultyScreen")
+    .classList.add("hidden");
+
+  document.getElementById("gameScreen")
+    .classList.add("hidden");
+
+  document.getElementById("menuScreen")
+    .classList.remove("hidden");
+
+}
+
+
+// NEW ROUND
 function newRound() {
 
   board = ["","","","","","","","",""];
 
   currentPlayer = "X";
+
   gameOver = false;
 
   document.getElementById("message").textContent = "";
 
-  updateTurn();
   drawBoard();
+
+  updateTurn();
+
 }
 
+
+// DRAW BOARD
 function drawBoard() {
 
   const boardElement = document.getElementById("board");
 
   boardElement.innerHTML = "";
 
-  board.forEach((value, index) => {
+  board.forEach(function(value, index) {
 
     const cell = document.createElement("div");
 
     cell.className = "cell";
+
     cell.textContent = value;
 
     cell.onclick = function() {
-      playMove(index);
+
+      playerMove(index);
+
     };
 
     boardElement.appendChild(cell);
 
   });
+
 }
 
-function playMove(index) {
+
+// PLAYER MOVE
+function playerMove(index) {
 
   if (gameOver) return;
 
   if (board[index] !== "") return;
 
-  if (gameMode !== "pvp" && currentPlayer === "O") return;
+  if (gameMode === "ai" && currentPlayer === "O") return;
 
   board[index] = currentPlayer;
 
@@ -302,33 +400,48 @@ function playMove(index) {
 
   if (checkGame()) return;
 
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  currentPlayer =
+    currentPlayer === "X" ? "O" : "X";
 
   updateTurn();
 
-  if (gameMode !== "pvp" && currentPlayer === "O") {
 
-    setTimeout(aiMove, 400);
+  // AI TURN
+  if (
+    gameMode === "ai" &&
+    currentPlayer === "O"
+  ) {
+
+    setTimeout(aiMove, 500);
 
   }
+
 }
 
+
+// AI MOVE
 function aiMove() {
 
   if (gameOver) return;
 
   let move;
 
-  if (gameMode === "easy") {
+  if (difficulty === "easy") {
+
     move = randomMove();
+
   }
 
-  else if (gameMode === "medium") {
+  else if (difficulty === "medium") {
+
     move = mediumMove();
+
   }
 
   else {
+
     move = bestMove();
+
   }
 
   if (move !== -1) {
@@ -342,29 +455,40 @@ function aiMove() {
     currentPlayer = "X";
 
     updateTurn();
+
   }
+
 }
 
+
+// EASY
 function randomMove() {
 
   const empty = [];
 
-  board.forEach((value, index) => {
+  for (let i = 0; i < 9; i++) {
 
-    if (value === "") {
-      empty.push(index);
+    if (board[i] === "") {
+
+      empty.push(i);
+
     }
 
-  });
+  }
 
   if (empty.length === 0) return -1;
 
-  return empty[Math.floor(Math.random() * empty.length)];
+  return empty[
+    Math.floor(Math.random() * empty.length)
+  ];
+
 }
 
+
+// MEDIUM
 function mediumMove() {
 
-  // Try to win
+  // AI tries to win
   for (let i = 0; i < 9; i++) {
 
     if (board[i] === "") {
@@ -376,13 +500,17 @@ function mediumMove() {
         board[i] = "";
 
         return i;
+
       }
 
       board[i] = "";
+
     }
+
   }
 
-  // Block player
+
+  // AI blocks player
   for (let i = 0; i < 9; i++) {
 
     if (board[i] === "") {
@@ -394,21 +522,34 @@ function mediumMove() {
         board[i] = "";
 
         return i;
+
       }
 
       board[i] = "";
+
     }
+
   }
 
-  // Take center
-  if (board[4] === "") return 4;
+
+  // Center
+  if (board[4] === "") {
+
+    return 4;
+
+  }
+
 
   return randomMove();
+
 }
 
+
+// HARD AI
 function bestMove() {
 
   let bestScore = -Infinity;
+
   let move = -1;
 
   for (let i = 0; i < 9; i++) {
@@ -417,30 +558,37 @@ function bestMove() {
 
       board[i] = "O";
 
-      let score = minimax(board, false);
+      let score = minimax(false);
 
       board[i] = "";
 
       if (score > bestScore) {
 
         bestScore = score;
+
         move = i;
 
       }
+
     }
+
   }
 
   return move;
+
 }
 
-function minimax(state, isMaximizing) {
 
-  let winner = getWinner();
+function minimax(isMaximizing) {
+
+  const winner = getWinner();
 
   if (winner === "O") return 10;
+
   if (winner === "X") return -10;
 
-  if (!state.includes("")) return 0;
+  if (!board.includes("")) return 0;
+
 
   if (isMaximizing) {
 
@@ -448,50 +596,69 @@ function minimax(state, isMaximizing) {
 
     for (let i = 0; i < 9; i++) {
 
-      if (state[i] === "") {
+      if (board[i] === "") {
 
-        state[i] = "O";
+        board[i] = "O";
 
-        let score = minimax(state, false);
+        let score = minimax(false);
 
-        state[i] = "";
+        board[i] = "";
 
-        bestScore = Math.max(bestScore, score);
+        bestScore = Math.max(
+          bestScore,
+          score
+        );
+
       }
+
     }
 
     return bestScore;
 
-  } else {
+  }
+
+
+  else {
 
     let bestScore = Infinity;
 
     for (let i = 0; i < 9; i++) {
 
-      if (state[i] === "") {
+      if (board[i] === "") {
 
-        state[i] = "X";
+        board[i] = "X";
 
-        let score = minimax(state, true);
+        let score = minimax(true);
 
-        state[i] = "";
+        board[i] = "";
 
-        bestScore = Math.min(bestScore, score);
+        bestScore = Math.min(
+          bestScore,
+          score
+        );
+
       }
+
     }
 
     return bestScore;
+
   }
+
 }
 
+
+// FIND WINNER
 function getWinner() {
 
   for (const line of winningLines) {
 
-    const [a,b,c] = line;
+    const a = line[0];
+    const b = line[1];
+    const c = line[2];
 
     if (
-      board[a] &&
+      board[a] !== "" &&
       board[a] === board[b] &&
       board[a] === board[c]
     ) {
@@ -499,11 +666,15 @@ function getWinner() {
       return board[a];
 
     }
+
   }
 
   return null;
+
 }
 
+
+// CHECK GAME
 function checkGame() {
 
   const winner = getWinner();
@@ -516,65 +687,87 @@ function checkGame() {
 
       xScore++;
 
-      document.getElementById("message").textContent =
-        "🎉 X WINS!";
+      document.getElementById("message")
+        .textContent = "🎉 X WINS!";
 
-    } else {
+    }
+
+    else {
 
       oScore++;
 
-      document.getElementById("message").textContent =
-        "🎉 O WINS!";
+      document.getElementById("message")
+        .textContent = "🎉 O WINS!";
 
     }
 
     updateScore();
 
     return true;
+
   }
+
 
   if (!board.includes("")) {
 
     gameOver = true;
 
-    document.getElementById("message").textContent =
-      "🤝 DRAW!";
+    document.getElementById("message")
+      .textContent = "🤝 DRAW!";
 
     return true;
+
   }
 
   return false;
+
 }
 
+
+// UPDATE TURN
 function updateTurn() {
 
-  const turn = document.getElementById("turn");
+  if (
+    gameMode === "ai" &&
+    currentPlayer === "O"
+  ) {
 
-  if (gameMode === "pvp") {
+    document.getElementById("turnText")
+      .textContent = "🤖 AI is thinking...";
 
-    turn.textContent = "Turn: " + currentPlayer;
-
-  } else {
-
-    if (currentPlayer === "X") {
-
-      turn.textContent = "Your turn: X";
-
-    } else {
-
-      turn.textContent = "🤖 AI is thinking...";
-
-    }
   }
+
+  else if (gameMode === "ai") {
+
+    document.getElementById("turnText")
+      .textContent = "Your turn: X";
+
+  }
+
+  else {
+
+    document.getElementById("turnText")
+      .textContent =
+      "Turn: " + currentPlayer;
+
+  }
+
 }
 
+
+// UPDATE SCORE
 function updateScore() {
 
-  document.getElementById("xScore").textContent = xScore;
-  document.getElementById("oScore").textContent = oScore;
+  document.getElementById("xScore")
+    .textContent = xScore;
+
+  document.getElementById("oScore")
+    .textContent = oScore;
+
 }
 
 </script>
 
 </body>
 </html>
+```
