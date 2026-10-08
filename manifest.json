@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "ayuup88.github",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Tic-Tac-Toe",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "tic-tac-toe",
+  "description": "A fun Tic-Tic-Toe game"
+}
