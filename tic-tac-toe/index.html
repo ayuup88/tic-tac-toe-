@@ -368,6 +368,49 @@ button:active {
 
 
 <script>
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+let musicStarted = false;
+
+function startMusic() {
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+
+    if (musicStarted) return;
+    musicStarted = true;
+
+    const notes = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23];
+    let i = 0;
+
+    setInterval(() => {
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = notes[i % notes.length];
+
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + 0.45
+        );
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.45);
+
+        i++;
+    }, 500);
+}
 
 let board = [];
 let currentPlayer = "X";
@@ -492,6 +535,7 @@ function toggleMusic() {
 
 /* ENTER */
 function enterGame() {
+  startMusic();
 
   document.getElementById("welcomeScreen")
     .classList.add("hidden");
