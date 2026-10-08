@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,22 +82,36 @@ button:active {
 
 #board {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 6px;
   margin: 20px 0;
+  width: 100%;
 }
 
 .cell {
   aspect-ratio: 1;
   background: white;
   color: #111827;
-  border-radius: 15px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 55px;
   font-weight: bold;
   cursor: pointer;
+  min-width: 0;
+}
+
+#board.size-3 .cell {
+  font-size: 55px;
+  border-radius: 15px;
+}
+
+#board.size-6 .cell {
+  font-size: 30px;
+}
+
+#board.size-9 .cell {
+  font-size: 20px;
+  border-radius: 6px;
 }
 
 .cell:hover {
@@ -181,8 +194,16 @@ button:active {
     font-size: 35px;
   }
 
-  .cell {
+  #board.size-3 .cell {
     font-size: 45px;
+  }
+
+  #board.size-6 .cell {
+    font-size: 25px;
+  }
+
+  #board.size-9 .cell {
+    font-size: 17px;
   }
 }
 </style>
@@ -216,7 +237,7 @@ button:active {
       Choose your game
     </p>
 
-    <button onclick="startPVP()">
+    <button onclick="chooseBoard('pvp')">
       👥 1 VS 1
     </button>
 
@@ -231,15 +252,15 @@ button:active {
 
     <h2>Choose Difficulty</h2>
 
-    <button onclick="startAI('easy')">
+    <button onclick="chooseBoard('ai', 'easy')">
       🟢 EASY
     </button>
 
-    <button onclick="startAI('medium')">
+    <button onclick="chooseBoard('ai', 'medium')">
       🟡 MEDIUM
     </button>
 
-    <button onclick="startAI('hard')">
+    <button onclick="chooseBoard('ai', 'hard')">
       🔴 HARD
     </button>
 
@@ -249,10 +270,41 @@ button:active {
 
   </div>
 
+  <!-- BOARD SIZE SCREEN -->
+  <div id="boardSizeScreen" class="screen hidden">
+
+    <h2>Choose Board Size</h2>
+
+    <p class="subtitle">
+      Choose how big you want your game
+    </p>
+
+    <button onclick="startGame(3)">
+      ⬜ 3 × 3
+    </button>
+
+    <button onclick="startGame(6)">
+      🟦 6 × 6
+    </button>
+
+    <button onclick="startGame(9)">
+      🟪 9 × 9
+    </button>
+
+    <button class="back" onclick="backFromBoardSize()">
+      ← BACK
+    </button>
+
+  </div>
+
   <!-- GAME SCREEN -->
   <div id="gameScreen" class="screen hidden">
 
     <h2>Tic-Tac-Toe</h2>
+
+    <div class="info" id="boardSizeText">
+      Board: 3 × 3
+    </div>
 
     <div class="info" id="turnText">
       Turn: X
@@ -314,19 +366,11 @@ let gameMode = "pvp";
 let difficulty = "easy";
 let gameOver = false;
 
+let boardSize = 3;
+let winLength = 3;
+
 let xScore = 0;
 let oScore = 0;
-
-const winningLines = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]
-];
 
 
 // ENTER BUTTON
@@ -341,7 +385,7 @@ function enterGame() {
 }
 
 
-// 1 VS 1
+// CHOOSE PVP
 function startPVP() {
 
   gameMode = "pvp";
@@ -373,24 +417,71 @@ function showDifficulty() {
 }
 
 
-// START AI
-function startAI(level) {
+// CHOOSE BOARD
+function chooseBoard(mode, level) {
 
-  gameMode = "ai";
-  difficulty = level;
+  gameMode = mode;
+
+  if (level) {
+    difficulty = level;
+  }
+
+  document.getElementById("menuScreen")
+    .classList.add("hidden");
+
+  document.getElementById("difficultyScreen")
+    .classList.add("hidden");
+
+  document.getElementById("boardSizeScreen")
+    .classList.remove("hidden");
+
+}
+
+
+// START GAME
+function startGame(size) {
+
+  boardSize = size;
+
+  if (boardSize === 3) {
+    winLength = 3;
+  } else {
+    winLength = 4;
+  }
 
   xScore = 0;
   oScore = 0;
 
   updateScore();
 
-  document.getElementById("difficultyScreen")
+  document.getElementById("boardSizeScreen")
     .classList.add("hidden");
 
   document.getElementById("gameScreen")
     .classList.remove("hidden");
 
   newRound();
+
+}
+
+
+// BACK FROM BOARD SIZE
+function backFromBoardSize() {
+
+  document.getElementById("boardSizeScreen")
+    .classList.add("hidden");
+
+  if (gameMode === "ai") {
+
+    document.getElementById("difficultyScreen")
+      .classList.remove("hidden");
+
+  } else {
+
+    document.getElementById("menuScreen")
+      .classList.remove("hidden");
+
+  }
 
 }
 
@@ -408,6 +499,9 @@ function showMenu() {
   document.getElementById("difficultyScreen")
     .classList.add("hidden");
 
+  document.getElementById("boardSizeScreen")
+    .classList.add("hidden");
+
   document.getElementById("gameScreen")
     .classList.add("hidden");
 
@@ -422,13 +516,16 @@ function newRound() {
 
   closePopup();
 
-  board = ["","","","","","","","",""];
+  board = new Array(boardSize * boardSize).fill("");
 
   currentPlayer = "X";
 
   gameOver = false;
 
   document.getElementById("message").textContent = "";
+
+  document.getElementById("boardSizeText").textContent =
+    "Board: " + boardSize + " × " + boardSize;
 
   drawBoard();
 
@@ -443,6 +540,11 @@ function drawBoard() {
   const boardElement = document.getElementById("board");
 
   boardElement.innerHTML = "";
+
+  boardElement.className = "size-" + boardSize;
+
+  boardElement.style.gridTemplateColumns =
+    "repeat(" + boardSize + ", 1fr)";
 
   board.forEach(function(value, index) {
 
@@ -510,15 +612,9 @@ function aiMove() {
 
   }
 
-  else if (difficulty === "medium") {
-
-    move = mediumMove();
-
-  }
-
   else {
 
-    move = bestMove();
+    move = smartMove();
 
   }
 
@@ -539,12 +635,12 @@ function aiMove() {
 }
 
 
-// EASY
+// EASY / RANDOM MOVE
 function randomMove() {
 
   const empty = [];
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < board.length; i++) {
 
     if (board[i] === "") {
 
@@ -563,10 +659,11 @@ function randomMove() {
 }
 
 
-// MEDIUM
-function mediumMove() {
+// SMART AI
+function smartMove() {
 
-  for (let i = 0; i < 9; i++) {
+  // Try to win
+  for (let i = 0; i < board.length; i++) {
 
     if (board[i] === "") {
 
@@ -586,7 +683,9 @@ function mediumMove() {
 
   }
 
-  for (let i = 0; i < 9; i++) {
+
+  // Block X
+  for (let i = 0; i < board.length; i++) {
 
     if (board[i] === "") {
 
@@ -606,114 +705,19 @@ function mediumMove() {
 
   }
 
-  if (board[4] === "") {
 
-    return 4;
+  // Take center
+  const center =
+    Math.floor(board.length / 2);
+
+  if (board[center] === "") {
+
+    return center;
 
   }
+
 
   return randomMove();
-
-}
-
-
-// HARD AI
-function bestMove() {
-
-  let bestScore = -Infinity;
-
-  let move = -1;
-
-  for (let i = 0; i < 9; i++) {
-
-    if (board[i] === "") {
-
-      board[i] = "O";
-
-      let score = minimax(false);
-
-      board[i] = "";
-
-      if (score > bestScore) {
-
-        bestScore = score;
-
-        move = i;
-
-      }
-
-    }
-
-  }
-
-  return move;
-
-}
-
-
-function minimax(isMaximizing) {
-
-  const winner = getWinner();
-
-  if (winner === "O") return 10;
-
-  if (winner === "X") return -10;
-
-  if (!board.includes("")) return 0;
-
-  if (isMaximizing) {
-
-    let bestScore = -Infinity;
-
-    for (let i = 0; i < 9; i++) {
-
-      if (board[i] === "") {
-
-        board[i] = "O";
-
-        let score = minimax(false);
-
-        board[i] = "";
-
-        bestScore = Math.max(
-          bestScore,
-          score
-        );
-
-      }
-
-    }
-
-    return bestScore;
-
-  }
-
-  else {
-
-    let bestScore = Infinity;
-
-    for (let i = 0; i < 9; i++) {
-
-      if (board[i] === "") {
-
-        board[i] = "X";
-
-        let score = minimax(true);
-
-        board[i] = "";
-
-        bestScore = Math.min(
-          bestScore,
-          score
-        );
-
-      }
-
-    }
-
-    return bestScore;
-
-  }
 
 }
 
@@ -721,19 +725,76 @@ function minimax(isMaximizing) {
 // FIND WINNER
 function getWinner() {
 
-  for (const line of winningLines) {
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, -1]
+  ];
 
-    const a = line[0];
-    const b = line[1];
-    const c = line[2];
+  for (let row = 0; row < boardSize; row++) {
 
-    if (
-      board[a] !== "" &&
-      board[a] === board[b] &&
-      board[a] === board[c]
-    ) {
+    for (let col = 0; col < boardSize; col++) {
 
-      return board[a];
+      const index =
+        row * boardSize + col;
+
+      if (board[index] === "") continue;
+
+      const player = board[index];
+
+      for (const direction of directions) {
+
+        const dr = direction[0];
+        const dc = direction[1];
+
+        let count = 1;
+
+        for (
+          let step = 1;
+          step < winLength;
+          step++
+        ) {
+
+          const newRow =
+            row + dr * step;
+
+          const newCol =
+            col + dc * step;
+
+          if (
+            newRow < 0 ||
+            newRow >= boardSize ||
+            newCol < 0 ||
+            newCol >= boardSize
+          ) {
+
+            break;
+
+          }
+
+          const newIndex =
+            newRow * boardSize + newCol;
+
+          if (board[newIndex] === player) {
+
+            count++;
+
+          } else {
+
+            break;
+
+          }
+
+        }
+
+        if (count >= winLength) {
+
+          return player;
+
+        }
+
+      }
 
     }
 
@@ -885,4 +946,3 @@ function closePopup() {
 
 </body>
 </html>
-```
