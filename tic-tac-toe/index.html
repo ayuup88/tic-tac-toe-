@@ -384,6 +384,11 @@ let winLength = 3;
 
 let xScore = 0;
 let oScore = 0;
+  
+let onlineRoomCode = null;
+let onlinePlayer = null;
+let onlinePollTimer = null;
+let onlineGameActive = false;
 
 
 /* =========================
@@ -504,7 +509,31 @@ function enterGame() {
     .classList.remove("hidden");
 
 }
+function enterOnlineGame(roomCode, player, data) {
+  onlineRoomCode = roomCode;
+  onlinePlayer = player;
+  onlineGameActive = true;
 
+  board = Array.isArray(data.board)
+    ? data.board
+    : Array(9).fill("");
+
+  currentPlayer = data.turn || "X";
+  gameOver = false;
+
+  document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.remove("hidden");
+
+  document.getElementById("boardSizeText").textContent =
+    "Online Room: " + roomCode;
+
+  document.getElementById("message").textContent =
+    "You are player " + player;
+
+  drawBoard();
+  updateTurn();
+}
 function showOnlineMenu() {
   const menu = document.getElementById("menuScreen");
 
@@ -550,9 +579,11 @@ async function createOnlineRoom() {
     return;
   }
 
-  document.getElementById("onlineMessage").innerHTML =
-    "Room code: <strong>" + roomCode +
-    "</strong><br>Send this code to your friend!";
+enterOnlineGame(roomCode, "X", data);
+
+document.getElementById("onlineMessage").innerHTML =
+  "Room code: <strong>" + roomCode +
+  "</strong><br>Send this code to your friend!";
 }
 
 async function joinOnlineRoom() {
@@ -586,7 +617,7 @@ async function joinOnlineRoom() {
     return;
   }
 
-  alert("You joined room " + roomCode.toUpperCase() + "! Next we'll add synchronized moves.");
+enterOnlineGame(roomCode.trim().toUpperCase(), "O", data);
 }
 
 /* MENU */
