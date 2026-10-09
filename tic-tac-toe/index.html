@@ -545,8 +545,8 @@ async function createOnlineRoom() {
     .single();
 
   if (error) {
-    document.getElementById("onlineMessage").textContent =
-      "Couldn't create room. Check your connection and database policies.";
+  document.getElementById("onlineMessage").textContent =
+    "Room error: " + error.message;
     return;
   }
 
