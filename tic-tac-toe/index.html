@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="manifest" href="manifest.json">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tic-Tac-Toe</title>
 
 <style>
 * {
@@ -14,7 +14,6 @@
   padding: 0;
   font-family: Arial, sans-serif;
 }
-
 body {
   min-height: 100vh;
   background: linear-gradient(135deg, #111827, #1d4ed8);
@@ -24,34 +23,26 @@ body {
   align-items: center;
   padding: 20px;
 }
-
 .container {
   width: 100%;
   max-width: 500px;
   text-align: center;
 }
-
 .screen {
   background: rgba(255,255,255,0.1);
   padding: 30px;
   border-radius: 25px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
-
 h1 {
   font-size: 45px;
   margin-bottom: 10px;
 }
-
-h2 {
-  margin-bottom: 20px;
-}
-
+h2 { margin-bottom: 20px; }
 .subtitle {
   color: #dbeafe;
   margin-bottom: 25px;
 }
-
 button {
   width: 100%;
   padding: 15px;
@@ -64,31 +55,19 @@ button {
   background: white;
   color: #111827;
 }
-
-button:hover {
-  transform: scale(1.02);
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
+button:hover { transform: scale(1.02); }
+button:active { transform: scale(0.98); }
 .back {
   background: #374151;
   color: white;
 }
-
-.hidden {
-  display: none !important;
-}
-
+.hidden { display: none !important; }
 #board {
   display: grid;
   gap: 6px;
   margin: 20px 0;
   width: 100%;
 }
-
 .cell {
   aspect-ratio: 1;
   background: white;
@@ -101,49 +80,35 @@ button:active {
   cursor: pointer;
   min-width: 0;
 }
-
 #board.size-3 .cell {
   font-size: 55px;
   border-radius: 15px;
 }
-
-#board.size-6 .cell {
-  font-size: 30px;
-}
-
+#board.size-6 .cell { font-size: 30px; }
 #board.size-9 .cell {
   font-size: 20px;
   border-radius: 6px;
 }
-
-.cell:hover {
-  background: #e5e7eb;
-}
-
+.cell:hover { background: #e5e7eb; }
 .info {
   font-size: 20px;
   margin: 10px;
 }
-
 .score {
   display: flex;
   justify-content: space-around;
   margin: 15px 0;
 }
-
 #message {
   min-height: 30px;
   font-size: 22px;
   font-weight: bold;
   margin: 10px;
 }
-
 .musicButton {
   background: #facc15;
   color: #111827;
 }
-
-/* POPUP */
 .popup {
   position: fixed;
   inset: 0;
@@ -153,7 +118,6 @@ button:active {
   align-items: center;
   z-index: 9999;
 }
-
 .popupBox {
   background: white;
   color: #111827;
@@ -164,236 +128,110 @@ button:active {
   text-align: center;
   animation: popupIn 0.35s ease;
 }
-
 .popupEmoji {
   font-size: 70px;
   margin-bottom: 10px;
 }
-
 .popupBox h2 {
   font-size: 30px;
   margin-bottom: 10px;
 }
-
 .popupBox p {
   font-size: 18px;
   margin-bottom: 20px;
 }
-
 .popupBox button {
   background: #1d4ed8;
   color: white;
 }
-
 @keyframes popupIn {
-  from {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
-
 @media (max-width: 500px) {
-  h1 {
-    font-size: 35px;
-  }
-
-  #board.size-3 .cell {
-    font-size: 45px;
-  }
-
-  #board.size-6 .cell {
-    font-size: 25px;
-  }
-
-  #board.size-9 .cell {
-    font-size: 17px;
-  }
+  h1 { font-size: 35px; }
+  #board.size-3 .cell { font-size: 45px; }
+  #board.size-6 .cell { font-size: 25px; }
+  #board.size-9 .cell { font-size: 17px; }
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <!-- WELCOME -->
   <div id="welcomeScreen" class="screen">
-
     <h1>🎮 Tic-Tac-Toe</h1>
-
-    <p class="subtitle">
-      Welcome to the ultimate Tic-Tac-Toe game
-    </p>
-
-    <button onclick="enterGame()">
-      ENTER
-    </button>
-
+    <p class="subtitle">Welcome to the ultimate Tic-Tac-Toe game</p>
+    <button onclick="enterGame()">ENTER</button>
   </div>
 
-  <!-- MENU -->
   <div id="menuScreen" class="screen hidden">
-
     <h1>🎮 Tic-Tac-Toe</h1>
-
-    <p class="subtitle">
-      Choose your game
-    </p>
-
-    <button onclick="chooseBoard('pvp')">
-      👥 1 VS 1
-    </button>
-
-    <button onclick="showDifficulty()">
-      🤖 PLAY AI
-    </button>
-    
-<button onclick="showOnlineMenu()">
-  🌍 ONLINE 1 VS 1
-</button>
-
+    <p class="subtitle">Choose your game</p>
+    <button onclick="chooseBoard('pvp')">👥 1 VS 1</button>
+    <button onclick="showDifficulty()">🤖 PLAY AI</button>
+    <button onclick="showOnlineMenu()">🌍 ONLINE 1 VS 1</button>
   </div>
 
-  <!-- DIFFICULTY -->
   <div id="difficultyScreen" class="screen hidden">
-
     <h2>Choose Difficulty</h2>
-
-    <button onclick="chooseBoard('ai','easy')">
-      🟢 EASY
-    </button>
-
-    <button onclick="chooseBoard('ai','medium')">
-      🟡 MEDIUM
-    </button>
-
-    <button onclick="chooseBoard('ai','hard')">
-      🔴 HARD
-    </button>
-
-    <button class="back" onclick="showMenu()">
-      ← BACK
-    </button>
-
+    <button onclick="chooseBoard('ai','easy')">🟢 EASY</button>
+    <button onclick="chooseBoard('ai','medium')">🟡 MEDIUM</button>
+    <button onclick="chooseBoard('ai','hard')">🔴 HARD</button>
+    <button class="back" onclick="showMenu()">← BACK</button>
   </div>
 
-  <!-- BOARD SIZE -->
   <div id="boardSizeScreen" class="screen hidden">
-
     <h2>Choose Board Size</h2>
-
-    <p class="subtitle">
-      Choose how big you want your game
-    </p>
-
-    <button onclick="startGame(3)">
-      ⬜ 3 × 3
-    </button>
-
-    <button onclick="startGame(6)">
-      🟦 6 × 6
-    </button>
-
-    <button onclick="startGame(9)">
-      🟪 9 × 9
-    </button>
-
-    <button class="back" onclick="backFromBoardSize()">
-      ← BACK
-    </button>
-
+    <p class="subtitle">Choose how big you want your game</p>
+    <button onclick="startGame(3)">⬜ 3 × 3</button>
+    <button onclick="startGame(6)">🟦 6 × 6</button>
+    <button onclick="startGame(9)">🟪 9 × 9</button>
+    <button class="back" onclick="backFromBoardSize()">← BACK</button>
   </div>
 
-  <!-- GAME -->
   <div id="gameScreen" class="screen hidden">
-
     <h2>Tic-Tac-Toe</h2>
-
-    <div class="info" id="boardSizeText">
-      Board: 3 × 3
-    </div>
-
-    <div class="info" id="turnText">
-      Turn: X
-    </div>
-
+    <div class="info" id="boardSizeText">Board: 3 × 3</div>
+    <div class="info" id="turnText">Turn: X</div>
     <div class="score">
       <span>❌ X: <b id="xScore">0</b></span>
       <span>⭕ O: <b id="oScore">0</b></span>
     </div>
-
     <div id="board"></div>
-
     <div id="message"></div>
-
-    <button onclick="newRound()">
-      🔄 NEW ROUND
-    </button>
-
-    <button class="musicButton" onclick="toggleMusic()" id="musicButton">
-      🎵 MUSIC ON
-    </button>
-
-    <button class="back" onclick="showMenu()">
-      🏠 MAIN MENU
-    </button>
-
+    <button onclick="newRound()">🔄 NEW ROUND</button>
+    <button class="musicButton" onclick="toggleMusic()" id="musicButton">🎵 MUSIC ON</button>
+    <button class="back" onclick="showMenu()">🏠 MAIN MENU</button>
   </div>
-
 </div>
 
-<!-- POPUP -->
 <div id="resultPopup" class="popup hidden">
-
   <div class="popupBox">
-
-    <div id="popupEmoji" class="popupEmoji">
-      🏆
-    </div>
-
-    <h2 id="popupTitle">
-      X WINS!
-    </h2>
-
-    <p id="popupText">
-      Congratulations!
-    </p>
-
-    <button onclick="closePopup()">
-      CONTINUE
-    </button>
-
+    <div id="popupEmoji" class="popupEmoji">🏆</div>
+    <h2 id="popupTitle">X WINS!</h2>
+    <p id="popupText">Congratulations!</p>
+    <button onclick="closePopup()">CONTINUE</button>
   </div>
-
 </div>
 
 <script>
-
 let board = [];
 let currentPlayer = "X";
 let gameMode = "pvp";
 let difficulty = "easy";
 let gameOver = false;
-
 let boardSize = 3;
 let winLength = 3;
-
 let xScore = 0;
 let oScore = 0;
-  
+
 let onlineRoomCode = null;
 let onlinePlayer = null;
 let onlinePollTimer = null;
 let onlineGameActive = false;
-
-
-/* =========================
-   MUSIC
-========================= */
+let onlineShownWinner = null;
 
 let audioContext = null;
 let musicPlaying = false;
@@ -401,158 +239,109 @@ let musicTimer = null;
 let musicStep = 0;
 
 const melody = [
-  261.63,
-  329.63,
-  392.00,
-  329.63,
-  293.66,
-  349.23,
-  440.00,
-  349.23
+  261.63, 329.63, 392.00, 329.63,
+  293.66, 349.23, 440.00, 349.23
 ];
 
 function startMusic() {
-
   if (musicPlaying) return;
-
-  audioContext =
-    audioContext ||
+  audioContext = audioContext ||
     new (window.AudioContext || window.webkitAudioContext)();
 
-  if (audioContext.state === "suspended") {
-    audioContext.resume();
-  }
-
+  if (audioContext.state === "suspended") audioContext.resume();
   musicPlaying = true;
-
   playNextNote();
 }
 
 function playNextNote() {
-
   if (!musicPlaying) return;
 
-  const oscillator =
-    audioContext.createOscillator();
-
-  const gain =
-    audioContext.createGain();
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
 
   oscillator.type = "sine";
-
-  oscillator.frequency.value =
-    melody[musicStep];
-
-  /* LOUDER MUSIC */
-  gain.gain.setValueAtTime(
-    0.10,
-    audioContext.currentTime
-  );
-
+  oscillator.frequency.value = melody[musicStep];
+  gain.gain.setValueAtTime(0.10, audioContext.currentTime);
   gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    audioContext.currentTime + 0.45
+    0.001, audioContext.currentTime + 0.45
   );
 
   oscillator.connect(gain);
   gain.connect(audioContext.destination);
-
   oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.45);
 
-  oscillator.stop(
-    audioContext.currentTime + 0.45
-  );
-
-  musicStep =
-    (musicStep + 1) % melody.length;
-
-  musicTimer =
-    setTimeout(playNextNote, 500);
+  musicStep = (musicStep + 1) % melody.length;
+  musicTimer = setTimeout(playNextNote, 500);
 }
 
 function stopMusic() {
-
   musicPlaying = false;
-
   clearTimeout(musicTimer);
 }
 
 function toggleMusic() {
-
   if (musicPlaying) {
-
     stopMusic();
-
-    document.getElementById("musicButton")
-      .textContent = "🔇 MUSIC OFF";
-
+    document.getElementById("musicButton").textContent = "🔇 MUSIC OFF";
   } else {
-
     startMusic();
-
-    document.getElementById("musicButton")
-      .textContent = "🎵 MUSIC ON";
-
+    document.getElementById("musicButton").textContent = "🎵 MUSIC ON";
   }
 }
 
-
-/* ENTER */
 function enterGame() {
-
   startMusic();
-
-  document.getElementById("welcomeScreen")
-    .classList.add("hidden");
-
-  document.getElementById("menuScreen")
-    .classList.remove("hidden");
-
+  document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("menuScreen").classList.remove("hidden");
 }
+
 function enterOnlineGame(roomCode, player, data) {
   onlineRoomCode = roomCode;
   onlinePlayer = player;
   onlineGameActive = true;
+  onlineShownWinner = null;
 
-  board = Array.isArray(data.board)
+  gameMode = "online";
+  boardSize = 3;
+  winLength = 3;
+  board = Array.isArray(data.board) && data.board.length === 9
     ? data.board
     : Array(9).fill("");
 
   currentPlayer = data.turn || "X";
-  gameOver = false;
+  gameOver = Boolean(data.winner);
 
-  document.getElementById("menuScreen").classList.add("hidden");
   document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("difficultyScreen").classList.add("hidden");
+  document.getElementById("boardSizeScreen").classList.add("hidden");
   document.getElementById("gameScreen").classList.remove("hidden");
 
   document.getElementById("boardSizeText").textContent =
     "Online Room: " + roomCode;
-
   document.getElementById("message").textContent =
-    "You are player " + player;
+    player === "X"
+      ? "You are X. Share room code: " + roomCode
+      : "You are O. Connected to room " + roomCode;
 
+  updateScore();
   drawBoard();
   updateTurn();
+
+  if (onlinePollTimer) clearInterval(onlinePollTimer);
+  syncOnlineGame();
+  onlinePollTimer = setInterval(syncOnlineGame, 1000);
 }
+
 function showOnlineMenu() {
   const menu = document.getElementById("menuScreen");
-
   menu.innerHTML = `
     <h1>🌍 Online Tic-Tac-Toe</h1>
     <p class="subtitle">Play with a friend anywhere!</p>
-
-    <button onclick="createOnlineRoom()">
-      ➕ Create Room
-    </button>
-
-    <button onclick="joinOnlineRoom()">
-      🔑 Join Room
-    </button>
-
-    <button onclick="location.reload()">
-      🏠 Back to Home
-    </button>
-
+    <button onclick="createOnlineRoom()">➕ Create Room</button>
+    <button onclick="joinOnlineRoom()">🔑 Join Room</button>
+    <button class="back" onclick="location.reload()">🏠 Back to Home</button>
     <p id="onlineMessage"></p>
   `;
 }
@@ -574,27 +363,24 @@ async function createOnlineRoom() {
     .single();
 
   if (error) {
-  document.getElementById("onlineMessage").textContent =
-    "Room error: " + error.message;
+    document.getElementById("onlineMessage").textContent =
+      "Room error: " + error.message;
     return;
   }
 
-enterOnlineGame(roomCode, "X", data);
-
-document.getElementById("onlineMessage").innerHTML =
-  "Room code: <strong>" + roomCode +
-  "</strong><br>Send this code to your friend!";
+  enterOnlineGame(roomCode, "X", data);
 }
 
 async function joinOnlineRoom() {
-  const roomCode = prompt("Enter your friend's room code:");
+  const enteredCode = prompt("Enter your friend's room code:");
+  if (!enteredCode) return;
 
-  if (!roomCode) return;
+  const roomCode = enteredCode.trim().toUpperCase();
 
   const { data, error } = await supabaseClient
     .from("games")
     .select("*")
-    .eq("room_code", roomCode.trim().toUpperCase())
+    .eq("room_code", roomCode)
     .maybeSingle();
 
   if (error || !data) {
@@ -607,166 +393,264 @@ async function joinOnlineRoom() {
     return;
   }
 
-  const { error: joinError } = await supabaseClient
+  const { data: joinedRoom, error: joinError } = await supabaseClient
     .from("games")
     .update({ player_o: "O" })
-    .eq("room_code", roomCode.trim().toUpperCase());
+    .eq("room_code", roomCode)
+    .eq("player_o", "")
+    .select()
+    .maybeSingle();
 
-  if (joinError) {
-    alert("Couldn't join the room. Please try again.");
+  if (joinError || !joinedRoom) {
+    alert("Couldn't join this room. It may already be full. Please try again.");
     return;
   }
 
-enterOnlineGame(roomCode.trim().toUpperCase(), "O", data);
+  enterOnlineGame(roomCode, "O", joinedRoom);
 }
 
-/* MENU */
+async function syncOnlineGame() {
+  if (!onlineGameActive || !onlineRoomCode) return;
+
+  const { data, error } = await supabaseClient
+    .from("games")
+    .select("*")
+    .eq("room_code", onlineRoomCode)
+    .maybeSingle();
+
+  if (error || !data) {
+    document.getElementById("message").textContent =
+      "Connection issue. Reconnecting...";
+    return;
+  }
+
+  if (!data.player_o) {
+    document.getElementById("message").textContent =
+      "Waiting for your friend... Room code: " + onlineRoomCode;
+    return;
+  }
+
+  const serverBoard = Array.isArray(data.board) && data.board.length === 9
+    ? data.board
+    : Array(9).fill("");
+
+  const changed =
+    JSON.stringify(board) !== JSON.stringify(serverBoard) ||
+    currentPlayer !== (data.turn || "X");
+
+  board = serverBoard;
+  currentPlayer = data.turn || "X";
+
+  if (changed) drawBoard();
+
+  if (data.winner) {
+    gameOver = true;
+
+    if (onlineShownWinner !== data.winner) {
+      onlineShownWinner = data.winner;
+
+      if (data.winner === "DRAW") {
+        document.getElementById("message").textContent = "🤝 DRAW!";
+        showPopup("DRAW!", "What a game! 🤝", "😮");
+      } else {
+        if (data.winner === "X") xScore++;
+        if (data.winner === "O") oScore++;
+        updateScore();
+
+        document.getElementById("message").textContent =
+          "🎉 " + data.winner + " WINS!";
+        showPopup(data.winner + " WINS!", "Congratulations! 🎉", "🏆");
+      }
+    }
+
+    updateTurn();
+    return;
+  }
+
+  gameOver = false;
+  updateTurn();
+  document.getElementById("message").textContent =
+    currentPlayer === onlinePlayer
+      ? "Your turn!"
+      : "Waiting for your opponent...";
+}
+
+function findOnlineWinner(cells) {
+  const lines = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8],
+    [0,4,8], [2,4,6]
+  ];
+
+  for (const line of lines) {
+    const [a, b, c] = line;
+    if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+      return cells[a];
+    }
+  }
+
+  return null;
+}
+
+async function onlineMove(index) {
+  if (!onlineGameActive || gameOver) return;
+
+  if (currentPlayer !== onlinePlayer) {
+    document.getElementById("message").textContent = "Wait for your turn!";
+    return;
+  }
+
+  if (board[index] !== "") return;
+
+  const nextBoard = [...board];
+  nextBoard[index] = onlinePlayer;
+
+  const winner = findOnlineWinner(nextBoard);
+  const isDraw = !winner && nextBoard.every(cell => cell !== "");
+  const result = winner || (isDraw ? "DRAW" : "");
+  const nextTurn = onlinePlayer === "X" ? "O" : "X";
+
+  document.getElementById("message").textContent = "Saving your move...";
+
+  const { error } = await supabaseClient
+    .from("games")
+    .update({
+      board: nextBoard,
+      turn: nextTurn,
+      winner: result
+    })
+    .eq("room_code", onlineRoomCode)
+    .eq("turn", onlinePlayer)
+    .eq("winner", "");
+
+  if (error) {
+    document.getElementById("message").textContent =
+      "Move not saved. Please try again.";
+    await syncOnlineGame();
+    return;
+  }
+
+  board = nextBoard;
+  currentPlayer = nextTurn;
+  if (result) gameOver = true;
+
+  drawBoard();
+  updateTurn();
+  await syncOnlineGame();
+}
+
 function showDifficulty() {
-
-  document.getElementById("menuScreen")
-    .classList.add("hidden");
-
-  document.getElementById("difficultyScreen")
-    .classList.remove("hidden");
+  document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("difficultyScreen").classList.remove("hidden");
 }
 
-
-/* CHOOSE BOARD */
 function chooseBoard(mode, level) {
-
   gameMode = mode;
+  if (level) difficulty = level;
 
-  if (level) {
-    difficulty = level;
-  }
-
-  document.getElementById("menuScreen")
-    .classList.add("hidden");
-
-  document.getElementById("difficultyScreen")
-    .classList.add("hidden");
-
-  document.getElementById("boardSizeScreen")
-    .classList.remove("hidden");
+  document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("difficultyScreen").classList.add("hidden");
+  document.getElementById("boardSizeScreen").classList.remove("hidden");
 }
 
-
-/* START GAME */
 function startGame(size) {
-
   boardSize = size;
-
-  if (boardSize === 3) {
-    winLength = 3;
-  } else {
-    winLength = 4;
-  }
-
+  winLength = boardSize === 3 ? 3 : 4;
   xScore = 0;
   oScore = 0;
-
   updateScore();
 
-  document.getElementById("boardSizeScreen")
-    .classList.add("hidden");
-
-  document.getElementById("gameScreen")
-    .classList.remove("hidden");
-
+  document.getElementById("boardSizeScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.remove("hidden");
   newRound();
 }
 
-
-/* BACK */
 function backFromBoardSize() {
-
-  document.getElementById("boardSizeScreen")
-    .classList.add("hidden");
+  document.getElementById("boardSizeScreen").classList.add("hidden");
 
   if (gameMode === "ai") {
-
-    document.getElementById("difficultyScreen")
-      .classList.remove("hidden");
-
+    document.getElementById("difficultyScreen").classList.remove("hidden");
   } else {
-
-    document.getElementById("menuScreen")
-      .classList.remove("hidden");
-
+    document.getElementById("menuScreen").classList.remove("hidden");
   }
 }
 
-
-/* MAIN MENU */
 function showMenu() {
-
   gameOver = true;
 
+  if (onlinePollTimer) {
+    clearInterval(onlinePollTimer);
+    onlinePollTimer = null;
+  }
+
+  onlineGameActive = false;
+  onlineRoomCode = null;
+  onlinePlayer = null;
+
   closePopup();
 
-  document.getElementById("welcomeScreen")
-    .classList.add("hidden");
-
-  document.getElementById("difficultyScreen")
-    .classList.add("hidden");
-
-  document.getElementById("boardSizeScreen")
-    .classList.add("hidden");
-
-  document.getElementById("gameScreen")
-    .classList.add("hidden");
-
-  document.getElementById("menuScreen")
-    .classList.remove("hidden");
+  document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("difficultyScreen").classList.add("hidden");
+  document.getElementById("boardSizeScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.add("hidden");
+  document.getElementById("menuScreen").classList.remove("hidden");
 }
 
-
-/* NEW ROUND */
-function newRound() {
-
+async function newRound() {
   closePopup();
 
-  board =
-    new Array(boardSize * boardSize).fill("");
+  if (onlineGameActive && gameMode === "online") {
+    const emptyBoard = Array(9).fill("");
 
+    const { error } = await supabaseClient
+      .from("games")
+      .update({ board: emptyBoard, turn: "X", winner: "" })
+      .eq("room_code", onlineRoomCode);
+
+    if (error) {
+      document.getElementById("message").textContent =
+        "Couldn't restart the online game. Try again.";
+      return;
+    }
+
+    onlineShownWinner = null;
+    board = emptyBoard;
+    currentPlayer = "X";
+    gameOver = false;
+
+    drawBoard();
+    updateTurn();
+    document.getElementById("message").textContent =
+      currentPlayer === onlinePlayer
+        ? "Your turn!"
+        : "Waiting for your opponent...";
+
+    await syncOnlineGame();
+    return;
+  }
+
+  board = new Array(boardSize * boardSize).fill("");
   currentPlayer = "X";
-
   gameOver = false;
 
-  document.getElementById("message")
-    .textContent = "";
-
-  document.getElementById("boardSizeText")
-    .textContent =
+  document.getElementById("message").textContent = "";
+  document.getElementById("boardSizeText").textContent =
     "Board: " + boardSize + " × " + boardSize;
 
   drawBoard();
-
   updateTurn();
 }
 
-
-/* DRAW BOARD */
 function drawBoard() {
-
-  const boardElement =
-    document.getElementById("board");
-
+  const boardElement = document.getElementById("board");
   boardElement.innerHTML = "";
-
-  boardElement.className =
-    "size-" + boardSize;
-
+  boardElement.className = "size-" + boardSize;
   boardElement.style.gridTemplateColumns =
     "repeat(" + boardSize + ", 1fr)";
 
   board.forEach(function(value, index) {
-
-    const cell =
-      document.createElement("div");
-
+    const cell = document.createElement("div");
     cell.className = "cell";
-
     cell.textContent = value;
 
     cell.onclick = function() {
@@ -774,224 +658,127 @@ function drawBoard() {
     };
 
     boardElement.appendChild(cell);
-
   });
 }
 
-
-/* PLAYER MOVE */
 function playerMove(index) {
+  if (onlineGameActive && gameMode === "online") {
+    onlineMove(index);
+    return;
+  }
 
   if (gameOver) return;
-
   if (board[index] !== "") return;
-
-  if (
-    gameMode === "ai" &&
-    currentPlayer === "O"
-  ) return;
+  if (gameMode === "ai" && currentPlayer === "O") return;
 
   board[index] = currentPlayer;
-
   drawBoard();
 
   if (checkGame()) return;
 
-  currentPlayer =
-    currentPlayer === "X" ? "O" : "X";
-
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
   updateTurn();
 
-  if (
-    gameMode === "ai" &&
-    currentPlayer === "O"
-  ) {
-
+  if (gameMode === "ai" && currentPlayer === "O") {
     setTimeout(aiMove, 500);
-
   }
 }
 
-
-/* AI */
 function aiMove() {
-
   if (gameOver) return;
 
   let move;
-
   if (difficulty === "easy") {
-
     move = randomMove();
-
   } else {
-
     move = smartMove();
-
   }
 
   if (move !== -1) {
-
     board[move] = "O";
-
     drawBoard();
 
     if (checkGame()) return;
 
     currentPlayer = "X";
-
     updateTurn();
-
   }
 }
 
-
-/* RANDOM */
 function randomMove() {
-
   const empty = [];
 
   for (let i = 0; i < board.length; i++) {
-
-    if (board[i] === "") {
-      empty.push(i);
-    }
-
+    if (board[i] === "") empty.push(i);
   }
 
   if (empty.length === 0) return -1;
-
-  return empty[
-    Math.floor(
-      Math.random() * empty.length
-    )
-  ];
+  return empty[Math.floor(Math.random() * empty.length)];
 }
 
-
-/* SMART AI */
 function smartMove() {
-
   for (let i = 0; i < board.length; i++) {
-
     if (board[i] === "") {
-
       board[i] = "O";
-
       if (getWinner() === "O") {
-
         board[i] = "";
-
         return i;
       }
-
       board[i] = "";
     }
   }
-
 
   for (let i = 0; i < board.length; i++) {
-
     if (board[i] === "") {
-
       board[i] = "X";
-
       if (getWinner() === "X") {
-
         board[i] = "";
-
         return i;
       }
-
       board[i] = "";
     }
   }
 
-
-  const center =
-    Math.floor(board.length / 2);
-
-  if (board[center] === "") {
-    return center;
-  }
+  const center = Math.floor(board.length / 2);
+  if (board[center] === "") return center;
 
   return randomMove();
 }
 
-
-/* WINNER */
 function getWinner() {
+  const directions = [[0,1], [1,0], [1,1], [1,-1]];
 
-  const directions = [
-    [0,1],
-    [1,0],
-    [1,1],
-    [1,-1]
-  ];
-
-  for (
-    let row = 0;
-    row < boardSize;
-    row++
-  ) {
-
-    for (
-      let col = 0;
-      col < boardSize;
-      col++
-    ) {
-
-      const index =
-        row * boardSize + col;
-
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      const index = row * boardSize + col;
       if (board[index] === "") continue;
 
       const player = board[index];
 
       for (const direction of directions) {
-
         const dr = direction[0];
         const dc = direction[1];
-
         let count = 1;
 
-        for (
-          let step = 1;
-          step < winLength;
-          step++
-        ) {
-
-          const newRow =
-            row + dr * step;
-
-          const newCol =
-            col + dc * step;
+        for (let step = 1; step < winLength; step++) {
+          const newRow = row + dr * step;
+          const newCol = col + dc * step;
 
           if (
-            newRow < 0 ||
-            newRow >= boardSize ||
-            newCol < 0 ||
-            newCol >= boardSize
-          ) {
-            break;
-          }
+            newRow < 0 || newRow >= boardSize ||
+            newCol < 0 || newCol >= boardSize
+          ) break;
 
-          const newIndex =
-            newRow * boardSize + newCol;
+          const newIndex = newRow * boardSize + newCol;
 
           if (board[newIndex] === player) {
-
             count++;
-
           } else {
-
             break;
           }
         }
 
-        if (count >= winLength) {
-          return player;
-        }
+        if (count >= winLength) return player;
       }
     }
   }
@@ -999,137 +786,66 @@ function getWinner() {
   return null;
 }
 
-
-/* CHECK GAME */
 function checkGame() {
-
   const winner = getWinner();
 
   if (winner) {
-
     gameOver = true;
 
     if (winner === "X") {
-
       xScore++;
-
-      document.getElementById("message")
-        .textContent = "🎉 X WINS!";
-
-      showPopup(
-        "X WINS!",
-        "Congratulations! 🎉",
-        "🏆"
-      );
-
+      document.getElementById("message").textContent = "🎉 X WINS!";
     } else {
-
       oScore++;
-
-      document.getElementById("message")
-        .textContent = "🎉 O WINS!";
-
-      showPopup(
-        "O WINS!",
-        "Congratulations! 🎉",
-        "🏆"
-      );
+      document.getElementById("message").textContent = "🎉 O WINS!";
     }
 
+    showPopup(winner + " WINS!", "Congratulations! 🎉", "🏆");
     updateScore();
-
     return true;
   }
 
-
   if (!board.includes("")) {
-
     gameOver = true;
-
-    document.getElementById("message")
-      .textContent = "🤝 DRAW!";
-
-    showPopup(
-      "DRAW!",
-      "What a game! 🤝",
-      "😮"
-    );
-
+    document.getElementById("message").textContent = "🤝 DRAW!";
+    showPopup("DRAW!", "What a game! 🤝", "😮");
     return true;
   }
 
   return false;
 }
 
-
-/* TURN */
 function updateTurn() {
-
-  if (
-    gameMode === "ai" &&
-    currentPlayer === "O"
-  ) {
-
-    document.getElementById("turnText")
-      .textContent =
+  if (gameMode === "online") {
+    document.getElementById("turnText").textContent =
+      currentPlayer === onlinePlayer
+        ? "Your turn: " + onlinePlayer
+        : "Opponent's turn: " + currentPlayer;
+  } else if (gameMode === "ai" && currentPlayer === "O") {
+    document.getElementById("turnText").textContent =
       "🤖 AI is thinking...";
-
   } else if (gameMode === "ai") {
-
-    document.getElementById("turnText")
-      .textContent =
-      "Your turn: X";
-
+    document.getElementById("turnText").textContent = "Your turn: X";
   } else {
-
-    document.getElementById("turnText")
-      .textContent =
+    document.getElementById("turnText").textContent =
       "Turn: " + currentPlayer;
   }
 }
 
-
-/* SCORE */
 function updateScore() {
-
-  document.getElementById("xScore")
-    .textContent = xScore;
-
-  document.getElementById("oScore")
-    .textContent = oScore;
+  document.getElementById("xScore").textContent = xScore;
+  document.getElementById("oScore").textContent = oScore;
 }
 
-
-/* POPUP */
 function showPopup(title, text, emoji) {
-
-  document.getElementById("popupTitle")
-    .textContent = title;
-
-  document.getElementById("popupText")
-    .textContent = text;
-
-  document.getElementById("popupEmoji")
-    .textContent = emoji;
-
-  document.getElementById("resultPopup")
-    .classList.remove("hidden");
+  document.getElementById("popupTitle").textContent = title;
+  document.getElementById("popupText").textContent = text;
+  document.getElementById("popupEmoji").textContent = emoji;
+  document.getElementById("resultPopup").classList.remove("hidden");
 }
 
-
-/* CLOSE POPUP */
 function closePopup() {
-
-  document.getElementById("resultPopup")
-    .classList.add("hidden");
-}
-
-
-
-/* CLOSE POPUP */
-function closePopup() {
-  document.getElementById("resultPopup")
-    .classList.add("hidden");
+  document.getElementById("resultPopup").classList.add("hidden");
 }
 </script>
 
@@ -1142,5 +858,6 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 </script>
+
 </body>
 </html>
