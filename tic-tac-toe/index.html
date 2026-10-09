@@ -1093,16 +1093,23 @@ function closePopup() {
     .classList.add("hidden");
 }
 
+
+
+/* CLOSE POPUP */
+function closePopup() {
+  document.getElementById("resultPopup")
+    .classList.add("hidden");
+}
 </script>
 
-</body>
-  <script>
-https://ctkrhvuejffgjvaawvci.supabase.co/rest/v1/
-sb_publishable_EiX8pzFHbN59GWNKHzu6RA_V0uzZb7m
+<script>
+const SUPABASE_URL = "https://ctkrhvuejffgjvaawvci.supabase.co";
+const SUPABASE_KEY = "YOUR_EXISTING_PUBLISHABLE_KEY";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 </script>
+</body>
 </html>
