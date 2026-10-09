@@ -251,6 +251,10 @@ button:active {
     <button onclick="showDifficulty()">
       🤖 PLAY AI
     </button>
+    
+<button onclick="showOnlineMenu()">
+  🌍 ONLINE 1 VS 1
+</button>
 
   </div>
 
@@ -501,6 +505,89 @@ function enterGame() {
 
 }
 
+function showOnlineMenu() {
+  const menu = document.getElementById("menuScreen");
+
+  menu.innerHTML = `
+    <h1>🌍 Online Tic-Tac-Toe</h1>
+    <p class="subtitle">Play with a friend anywhere!</p>
+
+    <button onclick="createOnlineRoom()">
+      ➕ Create Room
+    </button>
+
+    <button onclick="joinOnlineRoom()">
+      🔑 Join Room
+    </button>
+
+    <button onclick="location.reload()">
+      🏠 Back to Home
+    </button>
+
+    <p id="onlineMessage"></p>
+  `;
+}
+
+async function createOnlineRoom() {
+  const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+  const { data, error } = await supabaseClient
+    .from("games")
+    .insert({
+      room_code: roomCode,
+      player_x: "X",
+      player_o: "",
+      board: ["", "", "", "", "", "", "", "", ""],
+      turn: "X",
+      winner: ""
+    })
+    .select()
+    .single();
+
+  if (error) {
+    document.getElementById("onlineMessage").textContent =
+      "Couldn't create room. Check your connection and database policies.";
+    return;
+  }
+
+  document.getElementById("onlineMessage").innerHTML =
+    "Room code: <strong>" + roomCode +
+    "</strong><br>Send this code to your friend!";
+}
+
+async function joinOnlineRoom() {
+  const roomCode = prompt("Enter your friend's room code:");
+
+  if (!roomCode) return;
+
+  const { data, error } = await supabaseClient
+    .from("games")
+    .select("*")
+    .eq("room_code", roomCode.trim().toUpperCase())
+    .maybeSingle();
+
+  if (error || !data) {
+    alert("Room not found. Check the code and try again.");
+    return;
+  }
+
+  if (data.player_o) {
+    alert("This room already has two players.");
+    return;
+  }
+
+  const { error: joinError } = await supabaseClient
+    .from("games")
+    .update({ player_o: "O" })
+    .eq("room_code", roomCode.trim().toUpperCase());
+
+  if (joinError) {
+    alert("Couldn't join the room. Please try again.");
+    return;
+  }
+
+  alert("You joined room " + roomCode.toUpperCase() + "! Next we'll add synchronized moves.");
+}
 
 /* MENU */
 function showDifficulty() {
