@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -457,9 +458,13 @@ async function syncOnlineGame() {
         if (data.winner === "O") oScore++;
         updateScore();
 
-        document.getElementById("message").textContent =
-          "🎉 " + data.winner + " WINS!";
-        showPopup(data.winner + " WINS!", "Congratulations! 🎉", "🏆");
+        if (data.winner === onlinePlayer) {
+          document.getElementById("message").textContent = "🎉 YOU WIN!";
+          showPopup("YOU WIN! 🏆", "Congratulations, champion! 🎉", "🏆");
+        } else {
+          document.getElementById("message").textContent = "😔 YOU LOSE!";
+          showPopup("YOU LOSE 😔", "Better luck next time!", "💙");
+        }
       }
     }
 
@@ -792,29 +797,18 @@ function checkGame() {
   if (winner) {
     gameOver = true;
 
- 
-if (winner === "X") {
-  xScore++;
-} else {
-  oScore++;
-}
+    if (winner === "X") {
+      xScore++;
+      document.getElementById("message").textContent = "🎉 X WINS!";
+    } else {
+      oScore++;
+      document.getElementById("message").textContent = "🎉 O WINS!";
+    }
 
-if (onlineMode) {
-  if (winner === onlinePlayer) {
-    document.getElementById("message").textContent = "🎉 YOU WIN!";
-    showPopup("YOU WIN! 🏆", "Congratulations, champion! 🎉", "🏆");
-  } else {
-    document.getElementById("message").textContent = "😔 YOU LOSE!";
-    showPopup("YOU LOSE 😔", "Better luck next time!", "💙");
+    showPopup(winner + " WINS!", "Congratulations! 🎉", "🏆");
+    updateScore();
+    return true;
   }
-} else {
-  document.getElementById("message").textContent = "🎉 " + winner + " WINS!";
-  showPopup(winner + " WINS!", "Congratulations! 🎉", "🏆");
-}
-
-updateScore();
-return true;
-}
 
   if (!board.includes("")) {
     gameOver = true;
