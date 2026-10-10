@@ -792,18 +792,29 @@ function checkGame() {
   if (winner) {
     gameOver = true;
 
-    if (winner === "X") {
-      xScore++;
-      document.getElementById("message").textContent = "🎉 X WINS!";
-    } else {
-      oScore++;
-      document.getElementById("message").textContent = "🎉 O WINS!";
-    }
+ 
+if (winner === "X") {
+  xScore++;
+} else {
+  oScore++;
+}
 
-    showPopup(winner + " WINS!", "Congratulations! 🎉", "🏆");
-    updateScore();
-    return true;
+if (onlineMode) {
+  if (winner === onlinePlayer) {
+    document.getElementById("message").textContent = "🎉 YOU WIN!";
+    showPopup("YOU WIN! 🏆", "Congratulations, champion! 🎉", "🏆");
+  } else {
+    document.getElementById("message").textContent = "😔 YOU LOSE!";
+    showPopup("YOU LOSE 😔", "Better luck next time!", "💙");
   }
+} else {
+  document.getElementById("message").textContent = "🎉 " + winner + " WINS!";
+  showPopup(winner + " WINS!", "Congratulations! 🎉", "🏆");
+}
+
+updateScore();
+return true;
+}
 
   if (!board.includes("")) {
     gameOver = true;
